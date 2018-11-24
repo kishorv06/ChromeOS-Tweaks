@@ -12,4 +12,6 @@ chmod a+x mount-internals
 cd /etc/init/
 curl -Ls https://raw.githubusercontent.com/kishorv06/ChromeOS-Tweaks/master/MountFS/mount-internals.conf
 
+/bin/mount-internals
+
 echo "Installed Successfully"
