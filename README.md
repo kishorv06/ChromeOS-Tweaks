@@ -26,6 +26,6 @@ acpi_osi=Linux acpi_backlight=vendor
 Run the following command in shell
 
 ```
-curl -Ls https://raw.githubusercontent.com/kishorv06/ChromeOS-Tweaks/master/MountFS/install.sh | sudo bash
+curl -Ls https://raw.githubusercontent.com/kishorv06/ChromeOS-Tweaks/master/MountFS/install.sh | bash
 ```
 
