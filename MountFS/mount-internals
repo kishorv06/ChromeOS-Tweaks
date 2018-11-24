@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if ! [[ $EUID = 0 ]]; then
+  echo "Please run as Root"
+  exit
+fi
+
+drives=$(sudo lsblk -rno name,fstype,label,mountpoint | grep "ntfs\|ext4\|fat32" | cut -d ' ' -f 1,3,4 --output-delimiter=':' | awk -F: '$1~/s.*[[:digit:]]/ && $3==""{print $1 ":" $2}')
+
+echo "Creating Loop Device..."
+dd if=/dev/zero of=/tmp/loop bs=1KB count=1024 status=none
+
+echo "Formating Loop Device..."
+mkfs.vfat /tmp/loop -n Computer &>/dev/null
+
+echo "Mounting Loop Device..."
+losetup /dev/loop9 /tmp/loop 2>/dev/null
+[ ! $? -eq 0 ] && echo "Removable Drive \"Computer\" is still mounted !! Exiting..." && exit
+
+dbus-send --print-reply --system --dest=org.chromium.CrosDisks /org/chromium/CrosDisks org.chromium.CrosDisks.Mount string:"/dev/loop9" string:"" arra$
+
+for drive in $drives
+do
+        IFS=':' read -r -a parts <<< "$drive"
+        name=${parts[0]}
+        label=${parts[1]//\\x20/\ }
+        [[ -z $label ]] && label=$name
+        echo "Mounting /dev/$name at /media/removable/Computer/$label"
+        mkdir "/media/removable/Computer/$label" >/dev/null
+        mount /dev/$name "/media/removable/Computer/$label" >/dev/null
+done
+
+echo "Done. All Partitions mounted."
