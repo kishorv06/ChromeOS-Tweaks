@@ -7,6 +7,8 @@ fi
 
 drives=$(sudo lsblk -rno name,fstype,label,mountpoint | grep "ntfs\|ext4\|fat32" | cut -d ' ' -f 1,3,4 --output-delimiter=':' | awk -F: '$1~/s.*[[:digit:]]/ && $3==""{print $1 ":" $2}')
 
+losetup -d /dev/loop9 >/dev/null
+
 echo "Creating Loop Device..."
 dd if=/dev/zero of=/tmp/loop bs=1KB count=1024 status=none
 
@@ -17,7 +19,7 @@ echo "Mounting Loop Device..."
 losetup /dev/loop9 /tmp/loop 2>/dev/null
 [ ! $? -eq 0 ] && echo "Removable Drive \"Computer\" is still mounted !! Exiting..." && exit
 
-dbus-send --print-reply --system --dest=org.chromium.CrosDisks /org/chromium/CrosDisks org.chromium.CrosDisks.Mount string:"/dev/loop9" string:"" arra$
+dbus-send --print-reply --system --dest=org.chromium.CrosDisks /org/chromium/CrosDisks org.chromium.CrosDisks.Mount string:"/dev/loop9" string:"" array:string:"rw" > /dev/null
 
 for drive in $drives
 do
