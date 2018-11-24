@@ -6,10 +6,10 @@ if ! [[ $EUID = 0 ]]; then
 fi
 
 cd /bin/
-curl -Ls https://github.com/kishorv06/ChromeOS-Tweaks/MountFS/mount-internals
+curl -Ls https://raw.githubusercontent.com/kishorv06/ChromeOS-Tweaks/master/MountFS/mount-internals
 chmod a+x mount-internals
 
 cd /etc/init/
-curl -Ls https://github.com/kishorv06/ChromeOS-Tweaks/MountFS/mount-internals.conf
+curl -Ls https://raw.githubusercontent.com/kishorv06/ChromeOS-Tweaks/master/MountFS/mount-internals.conf
 
 echo "Installed Successfully"
